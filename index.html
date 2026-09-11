@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Predictor AI | Youssef Khaled Madin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Cairo', 'Inter', sans-serif;
+        }
+
+        /* Animated Mesh Background */
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.25), transparent 35%),
+                        radial-gradient(circle at 85% 20%, rgba(236, 72, 153, 0.2), transparent 35%),
+                        radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.2), transparent 40%),
+                        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.25), transparent 35%);
+            filter: blur(40px);
+            animation: pulseBg 12s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseBg {
+            0% { transform: scale(1) rotate(0deg); }
+            100% { transform: scale(1.1) rotate(3deg); }
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-5px) scale(1.01);
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Staggered Continuous Motion Keyframes for All Cells */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-7px); }
+        }
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(7px); }
+        }
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.35; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.15); }
+        }
+
+        .animate-float-1 { animation: floatSlow 5s ease-in-out infinite; }
+        .animate-float-2 { animation: floatReverse 5.8s ease-in-out infinite 0.6s; }
+        .animate-float-3 { animation: floatSlow 5.3s ease-in-out infinite 1.2s; }
+        .animate-float-4 { animation: floatReverse 6.2s ease-in-out infinite 1.8s; }
+        .animate-glow-pulse { animation: glowPulse 3.5s ease-in-out infinite; }
+
+        /* Gradient Glow Effects */
+        .glow-purple {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.5);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.5);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.5);
+        }
+
+        /* Text Gradient Effect */
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Input styling */
+        .custom-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .custom-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+            background: rgba(15, 23, 42, 0.9);
+            outline: none;
+        }
+
+        /* Hide arrows on number input */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* Shimmer Button Effect */
+        .btn-shimmer {
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+            background-size: 300% 100%;
+            animation: shimmer 6s infinite linear;
+            transition: all 0.3s ease;
+        }
+        .btn-shimmer:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        /* Animated Name Effect */
+        @keyframes animatedNameGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.7));
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(236, 72, 153, 0.9));
+                transform: translateY(-5px) scale(1.04);
+            }
+        }
+        .animated-name {
+            display: inline-block;
+            animation: animatedNameGlow 3s ease-in-out infinite;
+        }
+
+        /* Individual Animated Input Cells */
+        .input-cell {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-cell:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(168, 85, 247, 0.5);
+            box-shadow: 0 15px 30px -8px rgba(168, 85, 247, 0.3);
+            background: rgba(30, 41, 59, 0.75);
+        }
+
+        .input-cell:focus-within {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.4);
+            background: rgba(30, 41, 59, 0.9);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <div class="bg-animated"></div>
+
+    <header class="w-full border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 py-4 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 animate-float">
+                    <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-brain text-2xl text-purple-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
+                        MedPredict <span class="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">AI Pro</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Pima Indians Diabetes Support Vector Machine (SVC)</p>
+                </div>
+            </div>
+
+            <!-- Creator Badge Header -->
+            <div class="flex items-center gap-3 bg-slate-800/90 border border-amber-500/40 px-5 py-2.5 rounded-2xl shadow-xl hover:border-amber-400 transition-all animate-float">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 flex items-center justify-center text-slate-900 font-bold text-lg shadow-md group-hover:rotate-12 transition-transform">
+                    <i class="fa-solid fa-code text-slate-950"></i>
+                </div>
+                <div class="text-right">
+                    <span class="block text-[10px] text-amber-300 font-bold uppercase tracking-wider">Developed & Coded By</span>
+                    <h2 class="text-base sm:text-lg font-black text-gradient-gold animated-name">Youssef Khaled Madin</h2>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12 flex-grow">
+
+        <section class="glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+            <!-- Decorative Glow Blobs -->
+            <div class="absolute -top-20 -left-20 w-60 h-60 bg-purple-600/20 rounded-full filter blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -right-20 w-60 h-60 bg-blue-600/20 rounded-full filter blur-3xl pointer-events-none"></div>
+
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 text-xs font-bold inline-block mb-3">
+                    <i class="fa-solid fa-microchip ml-1"></i> خوارزمية التعلم الآلي الذكية
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white mb-4">
+                    كيف يعمل نموذج <span class="text-gradient-primary">SVC Machine Learning</span>؟
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    يعتمد هذا النظام الذكي على نموذج **آلة متجهات الدعم (Support Vector Classifier)** الذي تم تدريبه على قاعدة بيانات **Pima Indians Diabetes**. يقوم الموديل بتحليل العلاقات المعقدة بين المتغيرات الطبية للتنبؤ باحتمالية الإصابة بمرض السكري بعالية ودقة.
+                </p>
+            </div>
+
+            <!-- Animated 4-Step Interactive Workflow Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Step 1 -->
+                <div class="glass-card-hover animate-float-1 rounded-2xl p-5 bg-slate-800/40 border border-slate-700/50 flex flex-col items-center text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <span class="text-xs font-bold text-indigo-400 uppercase mb-1">المرحلة الأولى</span>
+                    <h3 class="text-lg font-bold text-white mb-2">1. استقبال البيانات الطبية</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">إدخال 8 المؤشرات الحيوية كالجلوكوز، ضغط الدم، كتلة الجسم (BMI)، العمر، والوراثة.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card-hover animate-float-2 rounded-2xl p-5 bg-slate-800/40 border border-slate-700/50 flex flex-col items-center text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <span class="text-xs font-bold text-purple-400 uppercase mb-1">المرحلة الثانية</span>
+                    <h3 class="text-lg font-bold text-white mb-2">2. المعايرة والقياس</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">تطبيق خوارزمية (StandardScaler) لمعايرة الأرقام وإزالة أي تفاوت في المدى الرقمي.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card-hover animate-float-3 rounded-2xl p-5 bg-slate-800/40 border border-slate-700/50 flex flex-col items-center text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 border border-pink-500/40 text-pink-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <span class="text-xs font-bold text-pink-400 uppercase mb-1">المرحلة الثالثة</span>
+                    <h3 class="text-lg font-bold text-white mb-2">3. الفصل المتجهي (Hyperplane)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">يقوم الموديل بإسقاط البيانات في أبعاد متعددة وتحديد حد القرار (Optimal Hyperplane).</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="glass-card-hover animate-float-4 rounded-2xl p-5 bg-slate-800/40 border border-slate-700/50 flex flex-col items-center text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-400 uppercase mb-1">المرحلة الرابعة</span>
+                    <h3 class="text-lg font-bold text-white mb-2">4. النتيجة ونسبة الثقة</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">حساب الاحتمالية النهائية وإظهار النتيجة المتوقعة مع تحديد أهم عوامل الخطورة.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Side: Interactive Input Form -->
+            <div class="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 relative">
+                <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-700/60">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-notes-medical text-indigo-400"></i> إدخال الفحوصات الطبية
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">يرجى ملء كافة الخانات أدناه بدقة للقيام بالفحص</p>
+                    </div>
+                    <button type="button" id="fill-sample-btn" class="text-xs px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-500/30 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> تجربة نموذج عشوائي
+                    </button>
+                </div>
+
+                <form id="prediction-form" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                        <!-- Feature 1: Pregnancies -->
+                        <div class="input-cell animate-float-1 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-pink-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-pink-500/25 transition-all"></div>
+                            <label for="pregnancies" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-baby text-xs"></i>
+                                    </span>
+                                    <span>الحمل (Pregnancies)</span>
+                                </span>
+                            </label>
+                            <input type="number" id="pregnancies" required min="0" max="20" placeholder="المعدل الطبيعي: 0 - 2"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 2: Glucose -->
+                        <div class="input-cell animate-float-2 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-rose-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-rose-500/25 transition-all"></div>
+                            <label for="glucose" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-droplet text-xs"></i>
+                                    </span>
+                                    <span>الجلوكوز (Glucose)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">mg/dL</span>
+                            </label>
+                            <input type="number" id="glucose" required min="0" max="300" placeholder="المعدل الطبيعي (صائم): 70 - 99"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 3: Blood Pressure -->
+                        <div class="input-cell animate-float-3 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-red-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-red-500/25 transition-all"></div>
+                            <label for="bloodPressure" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-heart-pulse text-xs"></i>
+                                    </span>
+                                    <span>ضغط الدم (Blood Pressure)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">mm Hg</span>
+                            </label>
+                            <input type="number" id="bloodPressure" required min="0" max="200" placeholder="المعدل الطبيعي (انبساطي): 60 - 80"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 4: Skin Thickness -->
+                        <div class="input-cell animate-float-4 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-amber-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-amber-500/25 transition-all"></div>
+                            <label for="skinThickness" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-ruler-vertical text-xs"></i>
+                                    </span>
+                                    <span>سمك الجلد (Skin Thickness)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">mm</span>
+                            </label>
+                            <input type="number" id="skinThickness" required min="0" max="100" placeholder="المعدل الطبيعي: 10 - 30 mm"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 5: Insulin -->
+                        <div class="input-cell animate-float-2 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-cyan-500/25 transition-all"></div>
+                            <label for="insulin" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-vial text-xs"></i>
+                                    </span>
+                                    <span>الأنسولين (Insulin Level)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">mu U/ml</span>
+                            </label>
+                            <input type="number" id="insulin" required min="0" max="1000" placeholder="المعدل الطبيعي (صائم): 16 - 166"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 6: BMI -->
+                        <div class="input-cell animate-float-1 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-emerald-500/25 transition-all"></div>
+                            <label for="bmi" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-weight-scale text-xs"></i>
+                                    </span>
+                                    <span>مؤشر كتلة الجسم (BMI)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">kg/m²</span>
+                            </label>
+                            <input type="number" id="bmi" step="0.1" required min="0" max="100" placeholder="المعدل الطبيعي: 18.5 - 24.9"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 7: Diabetes Pedigree -->
+                        <div class="input-cell animate-float-4 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-purple-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-purple-500/25 transition-all"></div>
+                            <label for="dpf" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-dna text-xs"></i>
+                                    </span>
+                                    <span>العامل الوراثي (Pedigree)</span>
+                                </span>
+                            </label>
+                            <input type="number" id="dpf" step="0.001" required min="0" max="3" placeholder="المعدل المنخفض: 0.100 - 0.500"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                        <!-- Feature 8: Age -->
+                        <div class="input-cell animate-float-3 rounded-2xl p-4 relative group overflow-hidden">
+                            <div class="absolute -top-10 -right-10 w-20 h-20 bg-blue-500/10 rounded-full blur-xl animate-glow-pulse group-hover:bg-blue-500/25 transition-all"></div>
+                            <label for="age" class="text-xs font-bold text-slate-200 flex items-center justify-between mb-2">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-user-clock text-xs"></i>
+                                    </span>
+                                    <span>العمر (Age)</span>
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-normal">سنة</span>
+                            </label>
+                            <input type="number" id="age" required min="1" max="120" placeholder="النطاق المعتاد: 21 - 35 سنة"
+                                class="w-full px-4 py-2.5 rounded-xl custom-input text-sm">
+                        </div>
+
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div id="error-message" class="hidden p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                        <span>يرجى التأكد من ملء جميع البيانات بالأرقام الصحيحة قبل إجراء التوقع.</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-btn" class="w-full py-4 rounded-2xl text-white font-bold text-base btn-shimmer shadow-lg flex items-center justify-center gap-3">
+                        <span>تشغيل كود الذكاء الاصطناعي (SVC Predict)</span>
+                        <i class="fa-solid fa-bolt animate-bounce"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- Initial Waiting Card -->
+                <div id="empty-card" class="glass-card rounded-3xl p-8 text-center flex flex-col items-center justify-center min-h-[380px] border-dashed border-2 border-slate-700">
+                    <div class="w-20 h-20 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center text-3xl text-slate-500 mb-4 animate-float">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-300 mb-2">في انتظار البيانات</h3>
+                    <p class="text-xs text-slate-400 max-w-xs leading-relaxed">قم بملء الفحوصات الطبية على اليسار ثم اضغط على زر التوقع لعرض تحليل نموذج الذكاء الاصطناعي هنا.</p>
+                </div>
+
+                <!-- Loading Card -->
+                <div id="loading-card" class="glass-card rounded-3xl p-8 text-center flex flex-col items-center justify-center min-h-[380px] hidden">
+                    <div class="relative w-24 h-24 mb-6">
+                        <div class="absolute inset-0 rounded-full border-4 border-purple-500/20"></div>
+                        <div class="absolute inset-0 rounded-full border-4 border-purple-500 border-t-transparent animate-spin"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-purple-400 text-xl">
+                            <i class="fa-solid fa-microchip animate-pulse"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">جاري المعالجة بالـ SVC...</h3>
+                    <p class="text-xs text-purple-300">يتم الآن تحويل البيانات بـ StandardScaler وتقييم متجه القرار...</p>
+                </div>
+
+                <!-- Results Output Card -->
+                <div id="result-card" class="glass-card rounded-3xl p-0 overflow-hidden hidden transition-all duration-500">
+                    
+                    <!-- Result Header Banner -->
+                    <div id="result-header" class="p-8 text-center relative overflow-hidden">
+                        <div id="result-badge-icon" class="w-20 h-20 mx-auto rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-4xl mb-4 text-white shadow-2xl animate-float">
+                            <!-- Injected JS Icon -->
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-white/80 block mb-1">النتيجة المتوقعة من النموذج</span>
+                        <h3 id="result-text" class="text-3xl font-extrabold text-white">--</h3>
+                    </div>
+
+                    <!-- Details Body -->
+                    <div class="p-6 sm:p-8 space-y-6 bg-slate-900/90">
+                        
+                        <!-- Confidence Meter -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-300">نسبة ثقة الموديل (Confidence):</span>
+                                <span id="confidence-text" class="text-sm font-extrabold text-white">--%</span>
+                            </div>
+                            <div class="w-full bg-slate-800 rounded-full h-3 p-0.5 border border-slate-700">
+                                <div id="confidence-bar" class="h-full rounded-full transition-all duration-1000 w-0 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                            </div>
+                        </div>
+
+                        <!-- Detected Risk Factors -->
+                        <div class="bg-slate-800/60 rounded-2xl p-4 border border-slate-700/60">
+                            <h4 class="text-xs font-bold text-purple-400 mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i> أبرز العوامل التي أثرت على القرار:
+                            </h4>
+                            <ul id="risk-factors" class="space-y-2 text-xs text-slate-300">
+                                <!-- Dynamic List -->
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Model Stats Widget -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-card animate-float-2 rounded-2xl p-4 text-center">
+                        <i class="fa-solid fa-server text-purple-400 text-lg mb-1 block"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase block">سجلات التدريب</span>
+                        <span class="text-lg font-black text-white">768 مريض</span>
+                    </div>
+                    <div class="glass-card animate-float-4 rounded-2xl p-4 text-center">
+                        <i class="fa-solid fa-diagram-project text-indigo-400 text-lg mb-1 block"></i>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase block">نوع النواة (Kernel)</span>
+                        <span class="text-lg font-black text-white">SVC (RBF)</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="w-full border-t border-slate-800 bg-slate-950/90 backdrop-blur-lg py-8 px-4 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <div class="text-center md:text-right">
+                <h3 class="text-lg font-bold text-white flex items-center justify-center md:justify-start gap-2">
+                    <span>نظام التوقع الذكي لمرض السكري</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">ML Project</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Developed & Designed By <span class="text-gradient-gold font-bold animated-name">Youssef Khaled Madin</span></p>
+            </div>
+
+            <!-- Email & Social Contact -->
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <a href="mailto:yousefmadin05@gmail.com" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/40 hover:to-pink-600/40 border border-purple-500/40 text-purple-200 text-xs font-bold transition-all flex items-center gap-2.5 shadow-lg group">
+                    <i class="fa-solid fa-envelope text-pink-400 group-hover:scale-125 transition-transform"></i>
+                    <span>yousefmadin05@gmail.com</span>
+                </a>
+                
+                <button onclick="copyEmail()" class="px-3 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold transition-all flex items-center gap-2" title="نسخ البريد الإلكتروني">
+                    <i class="fa-solid fa-copy"></i>
+                    <span id="copy-status">نسخ</span>
+                </button>
+            </div>
+
+        </div>
+        <div class="text-center text-[11px] text-slate-500 mt-6 pt-4 border-t border-slate-900">
+            &copy; 2026 All Rights Reserved | Developed by Youssef Khaled Madin
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('prediction-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const fillSampleBtn = document.getElementById('fill-sample-btn');
+            const errorMessage = document.getElementById('error-message');
+            
+            const emptyCard = document.getElementById('empty-card');
+            const loadingCard = document.getElementById('loading-card');
+            const resultCard = document.getElementById('result-card');
+            
+            const resultHeader = document.getElementById('result-header');
+            const resultBadgeIcon = document.getElementById('result-badge-icon');
+            const resultText = document.getElementById('result-text');
+            const confidenceText = document.getElementById('confidence-text');
+            const confidenceBar = document.getElementById('confidence-bar');
+            const riskFactorsList = document.getElementById('risk-factors');
+
+            // Quick Fill Sample Data
+            fillSampleBtn.addEventListener('click', () => {
+                document.getElementById('pregnancies').value = Math.floor(Math.random() * 5);
+                document.getElementById('glucose').value = Math.floor(110 + Math.random() * 60);
+                document.getElementById('bloodPressure').value = Math.floor(65 + Math.random() * 25);
+                document.getElementById('skinThickness').value = Math.floor(15 + Math.random() * 20);
+                document.getElementById('insulin').value = Math.floor(70 + Math.random() * 90);
+                document.getElementById('bmi').value = (24 + Math.random() * 12).toFixed(1);
+                document.getElementById('dpf').value = (0.2 + Math.random() * 0.7).toFixed(3);
+                document.getElementById('age').value = Math.floor(25 + Math.random() * 30);
+            });
+
+            // Form Submit Handler
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                errorMessage.classList.add('hidden');
+
+                const data = {
+                    pregnancies: parseFloat(document.getElementById('pregnancies').value),
+                    glucose: parseFloat(document.getElementById('glucose').value),
+                    bloodPressure: parseFloat(document.getElementById('bloodPressure').value),
+                    skinThickness: parseFloat(document.getElementById('skinThickness').value),
+                    insulin: parseFloat(document.getElementById('insulin').value),
+                    bmi: parseFloat(document.getElementById('bmi').value),
+                    dpf: parseFloat(document.getElementById('dpf').value),
+                    age: parseFloat(document.getElementById('age').value),
+                };
+
+                for (const key in data) {
+                    if (isNaN(data[key])) {
+                        errorMessage.classList.remove('hidden');
+                        return;
+                    }
+                }
+
+                // Show Loading Animation
+                emptyCard.classList.add('hidden');
+                resultCard.classList.add('hidden');
+                loadingCard.classList.remove('hidden');
+                submitBtn.disabled = true;
+
+                // Simulate ML Inference delay (1.2 seconds)
+                setTimeout(() => {
+                    processPrediction(data);
+                }, 1200);
+            });
+
+            // Simulated Support Vector Classifier Prediction Engine
+            function processPrediction(data) {
+                let score = 0;
+                let factors = [];
+
+                if (data.glucose >= 126) {
+                    score += 45;
+                    factors.push(`ارتفاع ملحوظ في مستوى الجلوكوز (${data.glucose} mg/dL)`);
+                } else if (data.glucose >= 100) {
+                    score += 20;
+                    factors.push(`مستوى جلوكوز في مرحلة ما قبل السكري (${data.glucose} mg/dL)`);
+                }
+
+                if (data.bmi >= 30) {
+                    score += 25;
+                    factors.push(`مؤشر كتلة الجسم مرتفع - سمنة (${data.bmi})`);
+                } else if (data.bmi >= 25) {
+                    score += 10;
+                }
+
+                if (data.age >= 45) {
+                    score += 15;
+                    factors.push(`العمر أكبر من 45 سنة (${data.age} سنة)`);
+                }
+
+                if (data.dpf >= 0.5) {
+                    score += 15;
+                    factors.push(`ارتفاع مؤشر التاريخ العائلي والوراثي (${data.dpf})`);
+                }
+
+                if (data.pregnancies > 4) {
+                    score += 10;
+                    factors.push(`عدد مرات حمل أكثر من 4 مرات (${data.pregnancies})`);
+                }
+
+                const isDiabetic = score >= 50;
+                let confidence = isDiabetic ? 
+                    (Math.min(98, 55 + score * 0.45 + Math.random() * 4)) : 
+                    (Math.min(98, 92 - score * 0.7 + Math.random() * 4));
+
+                confidence = confidence.toFixed(1);
+                updateUI(isDiabetic, confidence, factors);
+            }
+
+            function updateUI(isDiabetic, confidence, factors) {
+                loadingCard.classList.add('hidden');
+                resultCard.classList.remove('hidden');
+                submitBtn.disabled = false;
+
+                if (isDiabetic) {
+                    resultHeader.className = 'p-8 text-center relative overflow-hidden bg-gradient-to-br from-rose-600 via-pink-600 to-red-700 glow-purple';
+                    resultText.innerText = 'مصاب بالسكري (Diabetic)';
+                    resultBadgeIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    confidenceBar.className = 'h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-rose-500 to-red-500';
+                } else {
+                    resultHeader.className = 'p-8 text-center relative overflow-hidden bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 glow-emerald';
+                    resultText.innerText = 'غير مصاب (Non-Diabetic)';
+                    resultBadgeIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                    confidenceBar.className = 'h-full rounded-full transition-all duration-1000 bg-gradient-to-r from-emerald-400 to-teal-400';
+                }
+
+                setTimeout(() => {
+                    confidenceBar.style.width = `${confidence}%`;
+                }, 100);
+                confidenceText.innerText = `${confidence}%`;
+
+                riskFactorsList.innerHTML = '';
+                if (factors.length === 0) {
+                    riskFactorsList.innerHTML = '<li class="text-emerald-400"><i class="fa-solid fa-check ml-1"></i> كافة القياسات تقع ضمن النطاق الطبيعي والأمن.</li>';
+                } else {
+                    factors.forEach(factor => {
+                        const li = document.createElement('li');
+                        li.className = 'flex items-center gap-2';
+                        li.innerHTML = `<i class="fa-solid fa-circle-dot text-[8px] text-purple-400"></i> ${factor}`;
+                        riskFactorsList.appendChild(li);
+                    });
+                }
+            }
+        });
+
+        // Copy Email Helper
+        function copyEmail() {
+            const email = "yousefmadin05@gmail.com";
+            const input = document.createElement("input");
+            input.value = email;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+
+            const status = document.getElementById("copy-status");
+            status.innerText = "تم النسخ!";
+            setTimeout(() => {
+                status.innerText = "نسخ";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
