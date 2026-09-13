@@ -1,4 +1,4 @@
-# 📊 Machine Learning Project: [اكتب اسم المشروع هنا، مثلاً: Diabetes Risk Prediction]
+# 📊 Machine Learning Project: [ Diabetes Risk Prediction]
 
 > وصف قصير للمشروع في سطرين (مثلاً: بناء نموذج تنبؤي باستخدام خوارزميات الـ Machine Learning لتحليل البيانات الطبية وتوقع احتمالية الإصابة بمرض السكر بدقة عالية).
 
